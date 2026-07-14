@@ -735,10 +735,6 @@ module module_cu_gf_monan
             end do
           end do
           do i=its,itf
-            !-- max convective cloud top is in 50 mbar
-            max_ktop(i) =  minloc(abs(po(:,i)-50.),1)
-          enddo
-          do i=its,itf
             do k=kts,ktf
                   !-- convert from theta to temperature 
                   theta2temp = pi(i,k,j)
@@ -809,22 +805,6 @@ module module_cu_gf_monan
                enddo
             enddo
           endif
-          !- pbl  (i) = depth of pbl layer (m)
-          !- kpbli(i) = PBL index of zo(k,i)
-          do i=its,itf
-            pbl  (i)  = zo(kpbli(i),i) - topt(i,j)
-          enddo
-          do i = its, itf
-            tke_mean(i) = 0.0
-            total_dp = 0.0
-            do k = kts+1, kpbli(i)-1
-               dp = -0.5*(po(k+1,i)-po(k-1,i))
-               tke_mean(i) = tke_mean(i) + tke_pbl(i,k,j)*dp
-               total_dp = total_dp + dp
-            end do
-            tke_mean(i) = max(1.e-5, tke_mean(i)/(total_dp+1.e-6))
-          end do
-
          !- begin: for GATE soundings-------------------------------------------
          if(P_USE_GATE) then
             if(CLEV_GRID == 0) stop "use_gate requires CLEV_GRID 1 or 2"
@@ -860,7 +840,7 @@ module module_cu_gf_monan
             !--- only for GATE soundingg
             if(trim(RUNDATA) == "GATE.dat") then
                jlx= jl
-              !jlx= 10 ! to run with only one soundings
+               !jlx= 82 ! to run with only one soundings
  
                do i=its,itf
                   do k=kts,kte
@@ -872,7 +852,6 @@ module module_cu_gf_monan
                      omeg     (k,i,:)=pvervel(jlx,k)
                      phil     (k,i) = pgeo(jlx,k)*c_grav   !geo
                      rhoi     (k,i) = 1.e2*po(k,i)/(c_rgas*temp_old(k,i))
-                     print*,k,i,po(k,i),temp_old(k,i),phil(k,i)
                   enddo
 
                   do k=kts,kte
@@ -893,8 +872,6 @@ module module_cu_gf_monan
                   ter11(i)  = phil(1,i)/c_grav  ! phil is given in g*h.
                   psur (i)  = ppres(jlx,1)
                   tsur (i)  = temp2m(i,j) !temp_old(i,1)
-                  kpbli(i)  = 5
-                  pbl  (i)  = zo(kpbli(i),i)
                   zws  (i)  = 1.0 ! wstar
                   do k=kts,ktf
                      temp_new(k,i) = temp_old(k,i) + dt *(zadvt(jlx,k)+zqr(jlx,k))/86400.
@@ -914,6 +891,22 @@ module module_cu_gf_monan
             endif
          endif 
          !- end for GATE soundings-------------------------------------------
+         !
+         !- pbl  (i) = depth of pbl layer (m)
+         !- kpbli(i) = PBL index of zo(k,i)
+         do i=its,itf
+           pbl  (i)  = zo(kpbli(i),i) - topt(i,j)
+         enddo
+         do i = its, itf
+           tke_mean(i) = 0.0
+           total_dp = 0.0
+           do k = kts+1, kpbli(i)-1
+              dp = -0.5*(po(k+1,i)-po(k-1,i))
+              tke_mean(i) = tke_mean(i) + tke_pbl(i,k,j)*dp
+              total_dp = total_dp + dp
+           end do
+           tke_mean(i) = max(1.e-5, tke_mean(i)/(total_dp+1.e-6))
+         end do
          !
          !- get excess T and Q for source air parcels
          do i=its,itf
@@ -958,6 +951,10 @@ module module_cu_gf_monan
             !-convective-scale velocity W* (m/s)
             zws(i) = max(0.,0.001-1.5*0.41*zkhvfl*pgeoh/pten)
             zws(i) = 1.2*zws(i)**.3333
+         enddo
+         do i=its,itf
+            !-- max convective cloud top is in 50 mbar
+            max_ktop(i) =  minloc(abs(po(:,i)-50.),1)
          enddo
          !
          !------ CALL CUMULUS PARAMETERIZATION
@@ -4345,7 +4342,7 @@ module module_cu_gf_monan
 
             !--- use this for just 'icount = 3' searches (original k22)
             if(cap_max(i) < depth_neg_buoy(i) .and. icount > 10) then
-                          ierr(i)=30
+                          ierr(i)=30 ; is_removed = remove(vec_ok, i)
                           ierrc(i)="could not find reasonable kbcon in cup_cloud_limits"
                           cycle loop0
             endif
@@ -4377,11 +4374,12 @@ module module_cu_gf_monan
          i = get_data_value(vec_ok,vtp_index)
          do k=kbcon(i)+1,ktf-1
             if(hcot(k,i) < heso_cup(k,i))then
-               ktop(i) = k; exit
+               ktop(i) = k
+               exit
             endif
          enddo
       enddo
-      
+
       !--- check cloud top for deep convection
       if(cumulus == 'deep') then
             min_deep_top=500. ! mbar 

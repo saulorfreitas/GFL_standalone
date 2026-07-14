@@ -15,11 +15,10 @@ program GFL_1d_driver
    logical :: land
    !- here are the place for data related with the gate soundings
    !- soundings arrays
-   integer ::jk, nruns, version, klon_local,klev_local,mzp
+   integer ::jk, nruns, klon_local,klev_local,mzp
 
    !- this for the namelist gf.inp
-   namelist /run/ runname, runlabel, rundata,version, land , klev_sound 
-
+   namelist /run/ runname, runlabel, rundata, land
    !- for grads output
    integer :: nrec,nvx,nvar,nvartotal,klevgrads(0:300),int_byte_size,n1,n2,n3
    real    :: real_byte_size
@@ -110,7 +109,7 @@ program GFL_1d_driver
      	do jk=p_klev,1,-1
      	read(7,*)pgeo(jl,jk),ppres(jl,jk),ptemp(jl,jk),pq(jl,jk),pu(jl,jk),pv(jl,jk),pvervel(jl,jk), &
      		       zq1(jl,jk),zq2(jl,jk),zqr(jl,jk),zadvt(jl,jk),zadvq(jl,jk)			    
-     	print*,"GATE=",jl,jk,pgeo(jl,jk),ppres(jl,jk),ptemp(jl,jk)
+     	!print*,"GATE=",jl,jk,pgeo(jl,jk),ppres(jl,jk),ptemp(jl,jk)
      	end do
      enddo
    close(7)
@@ -128,9 +127,9 @@ program GFL_1d_driver
    sflux_t  (:,:) = 100./(1.15*c_cp) !(K/s)
    CONPRR   (:,:) = 0.
    topt     (:,:) = 0.
-   kpbl     (:,:) = 5
+   kpbl     (:,:) = 10
    wlpool   (:,:) = 5.
-   tke_pbl        = 1.e-3 
+   tke_pbl        = 2. 
    turb_len_scale = 100.
    buoyx          = 20000.
    mpas_cape      = 1000.      
@@ -146,7 +145,7 @@ program GFL_1d_driver
 
 !- big loop on the gate soundings
    do jl=1,klon_LOCAL !klon=number of soundings
-     !do jl=10,10 !klon=number of soundings
+   !  do jl=10,10 !klon=number of soundings
 
     time=time+dt
     !if(time/86400. > 2.) cycle

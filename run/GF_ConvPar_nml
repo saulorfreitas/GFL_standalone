@@ -1,23 +1,24 @@
 &GF_NML
-  icumulus_gf   = 1,1,0,                != trimodal plume (deep ,shallow ,congestus)
+
+  icumulus_gf   = 1,1,0,                    != trimodal plume (deep ,shallow ,congestus)
   
   closure_choice    = 10,10,3,              != closure for the mass flux at the cloud base
   
-  cum_entr_rate   = -999., 13.e-4, 20.e-4, != initial gross entrainment rate for 
+  cum_entr_rate   = 1.e-4, 13.e-4, 20.e-4,  != initial gross entrainment rate for 
                                             != deep, shallow, congestus
 
-  cum_fr_min_entr = 0.01,0.1,0.1,            != fraction of the mininum entraiment rate in terms
+  cum_fr_min_entr = 0.01,0.1,0.1,           != fraction of the mininum entraiment rate in terms
                                             != of the cum_entr_rate
 
   cum_min_cloud_depth = 200.,70.,150.,      != minimum cloud depth (mbar)
 
-  dicycle           = 2,                    != 0/1/2:  diurnal cycle closure, default = 1
+  dicycle           = 0,                    != 0/1/2:  diurnal cycle closure, default = 1
                                             != 2 adds Qadv closure (Becker et al 2021) 
   cum_t_star = 1., -99., -99.,       != scale temperature for diurnal cycle closure, 
  
   use_sub3d         = 0,
-  use_scale_dep     = 1,            != 0/1: turn ON/OFF the scale dependence approach
-  sig_factor        = 0.3,         != exponential factor for the sigma determination (orig = 0.1)
+  use_scale_dep     = 1,             != 0/1: turn ON/OFF the scale dependence approach
+  sig_factor        = 0.3,           != exponential factor for the sigma determination (orig = 0.1)
   
   use_cold_start    = 0,
   use_pass_cloudvol = 0,
@@ -25,8 +26,8 @@
   use_rhu_ctrl_entr = 0,
   use_shear_ctrl_entr=0,
   use_cwv_ctrl_entr = 0,
-  convection_tracer = 1,           != 0/1:  turn on/off the "convection" tracer
-  add_coldpool_clos = 4,           ! add the the mass flux associated to the W @ leading of the gust front
+  convection_tracer = 0,           != 0/1:  turn on/off the "convection" tracer
+  add_coldpool_clos = 0,           ! add the the mass flux associated to the W @ leading of the gust front
   add_coldpool_trig = 0,           ! add triggering criteria based on cold pool presence
   use_memory        = 0,
 
@@ -52,7 +53,7 @@
 !----
 
 !---- boundary condition specification
-  cum_use_excess    = 1,1,1,
+  cum_use_excess    = 0,0,0,
   cum_ave_layer     = 50.,30.,30.,!- (deep ,shallow ,congestus)
 !----
 
@@ -98,7 +99,7 @@
   use_tracer_evap   = 1,
   apply_sub_mp      = 0,
   use_flux_form     = 1,
-  use_fct           = 1,
+  use_fct           = 0,
   alp1              = 1, 
 !----
   
