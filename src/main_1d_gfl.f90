@@ -57,7 +57,7 @@ program GFL_1d_driver
                                              ,rbotdpcu,rmfxdncu
    real,dimension(ims:ime,jms:jme)         :: var2d1,var2d2
 
-   real,dimension(ims:ime,kms:kme,jms:jme) :: rupmfxcu,rdnmfxcu
+   real,dimension(ims:ime,kms:kme,jms:jme) :: rupmfxcu,rdnmfxcu,qc_cu,qi_cu
    real,dimension(ims:ime,kms:kme,jms:jme) :: var3d1
 
 
@@ -203,6 +203,8 @@ program GFL_1d_driver
                       ,rvcuten               &
                       ,rbuoyxcuten           &
                       ,rcnvcfcuten           &
+                      ,qc_cu                 &
+                      ,qi_cu                 &
 
                       ,sub3d_rthcuten        &
                       ,sub3d_rqvcuten        &

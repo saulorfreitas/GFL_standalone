@@ -1,7 +1,7 @@
 
  &run
-  runname   = "ref4",
-  runlabel  = "ref4",
+  runname   = "shC0z_env2",
+  runlabel  = "shC0z",
   rundata   = "GATE.dat",
   land      =.TRUE.,
  

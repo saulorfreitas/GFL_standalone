@@ -53,7 +53,7 @@
 !----
 
 !---- boundary condition specification
-  cum_use_excess    = 0,0,0,
+  cum_use_excess    = 1,1,1,
   cum_ave_layer     = 50.,30.,30.,!- (deep ,shallow ,congestus)
 !----
 
@@ -78,7 +78,7 @@
   qrc_crit          = 1.0e-4,
 
   c0_deep           = 1.0e-3,
-  c0_shal           = 1.0e-3,
+  c0_shal           = 0.0e-3,
   c0_mid            = 1.5e-3, 
   n_cldrop          = 200.,
 
